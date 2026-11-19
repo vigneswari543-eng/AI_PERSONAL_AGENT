@@ -1,29 +1,22 @@
-
 import streamlit as st
-from ollama import Client
+from groq import Groq
 
 def ask_ai(question):
-    api_key = st.secrets["OLLAMA_API_KEY"]
+    client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-    client = Client(
-        host="https://ollama.com",
-        headers={
-            "Authorization": f"Bearer {api_key}"
-        }
-    )
-
-    response = client.chat(
-        model="gemma4:31b",
+    response = client.chat.completions.create(
+        model="openai/gpt-oss-20b",
         messages=[
             {
                 "role": "system",
-                "content": "You are VIGNU AI, a friendly and intelligent personal assistant. Give clear and helpful answers."
+                "content": "You are VIGNU AI, a friendly personal AI assistant. Give clear, simple and helpful answers."
             },
             {
                 "role": "user",
                 "content": question
             }
-        ]
+        ],
+        max_completion_tokens=1024
     )
 
-    return response.message.content
+    return response.choices[0].message.content
