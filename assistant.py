@@ -1,9 +1,19 @@
 
-import ollama
+import streamlit as st
+from ollama import Client
 
 def ask_ai(question):
-    response = ollama.chat(
-        model="llama3.2:1b",
+    api_key = st.secrets["OLLAMA_API_KEY"]
+
+    client = Client(
+        host="https://ollama.com",
+        headers={
+            "Authorization": f"Bearer {api_key}"
+        }
+    )
+
+    response = client.chat(
+        model="gemma4:31b",
         messages=[
             {
                 "role": "system",
@@ -16,4 +26,4 @@ def ask_ai(question):
         ]
     )
 
-    return response["message"]["content"]
+    return response.message.content
